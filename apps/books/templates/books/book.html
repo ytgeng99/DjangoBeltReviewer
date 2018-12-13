@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Book Reviews</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+    <body>
+        <p>
+            {{request.session.first_name}}: 
+            <a href={% url 'books:index' %}>Home</a> | 
+            <a href={% url 'users:logout' %}>Logout</a>
+        </p>
+        <h2>{{book_title}}</h2>
+        <h3>Author: {{author_name}}</h3>
+        <h3>Add a Review:</h3>
+        <form action={% url 'books:process_book' %} method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="book_title" value="{{book_title}}">
+            <input type="hidden" name="author_name_list" value="custom">
+            <input type="hidden" name="author_name" value="{{author_name}}">
+            <textarea name="review" rows="5" cols="50"></textarea>
+            <br>
+            Rating: 
+            <select name="rating">
+                <option value="0">0</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+            </select> stars
+            <br><br>
+            <input type="submit" value="Submit Review">
+        </form>
+
+        <h1>Reviews:</h1>
+        <hr>
+        {% for review in reviews %}
+        <p>Rating: {{review.rating}}</p>
+        <p><a href={% url 'users:user' id=review.user_id %}>{{review.user}}</a> says: {{review.review}}</p>
+        <p>Posted on {{review.posted}}</p>
+        {% if review.user_id == request.session.id %}
+        <p><a href={% url 'books:delete_review' id=review.review_id %}>Delete this Review</a></p>
+        {% endif %}
+        <hr>
+        {% endfor %}
+    </body>
+</html>

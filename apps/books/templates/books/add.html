@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Add Book and Review</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+    <body>
+        {% if messages %}
+        <div style="color:red;">
+            <h3>ERRORS:</h3>
+            <ul>
+                {% for message in messages %}
+                <li>{{message}}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+        <p>
+            {{request.session.first_name}}: 
+            <a href={% url 'books:index' %}>Home</a> | 
+            <a href={% url 'users:logout' %}>Logout</a>
+        </p>
+        <h1>Add a New Book Title and a Review:</h1>
+        <form action={% url 'books:process_book' %} method="POST">
+            {% csrf_token %}
+            <label for="book_title">Book Title: </label>
+            <input type="text" name="book_title" id="book_title" value="{{request.session.book_title}}">
+            <br><br>
+            Author: <br>
+            Choose from the list: 
+            <select name="author_name_list">
+                <option value="custom">NOT IN LIST</option>
+                {% for author in authors %}
+                <option value="{{author}}">{{author}}</option>
+                {% endfor %}
+            </select>
+            <br>
+            Or add a new author: 
+            <input type="text" name="author_name" value="{{request.session.author_name}}">
+            <br><br>
+            Review: <br>
+            <textarea name="review" rows="5" cols="50">{{request.session.review}}</textarea>
+            <br><br>
+            Rating: 
+            <select name="rating">
+                <option value="0">0</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+            </select> stars
+            <br><br>
+            <input type="submit" value="Add Book and Review">
+        </form>
+    </body>
+</html>
